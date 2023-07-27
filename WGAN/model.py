@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 
 
-class Discriminator(nn.Module):
+class Criti(nn.Module):
     def __init__(self, channel_img, features_d):
-        super(Discriminator, self).__init__()
+        super(Criti, self).__init__()
         self.disc = nn.Sequential(
             nn.Conv2d(in_channels=channel_img,
                                out_channels=features_d,
@@ -38,7 +38,6 @@ class Discriminator(nn.Module):
                 stride=2,
                 padding=0
             ),#1x1
-            nn.Sigmoid()
         )
 
     def _block(self,
@@ -56,7 +55,7 @@ class Discriminator(nn.Module):
                 padding=padding,
                 bias=False
             ),
-            nn.BatchNorm2d(out_channels),
+            nn.InstanceNorm2d(out_channels, affine=True),
             nn.LeakyReLU(0.2),
         )
     def forward(self,x):
@@ -140,7 +139,7 @@ def test():
     z_dim = 100
     x = torch.randn((N,in_channels,H,W))
     
-    disc = Discriminator(in_channels,8)
+    disc = Criti(in_channels,8)
     initialize_weights(disc)
     assert disc(x).shape == (N,1,1,1)
     
